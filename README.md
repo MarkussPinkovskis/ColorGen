@@ -1,1 +1,1 @@
-# jauns-projekts
+# ColorGen
