@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, redirect, session
+from flask import Flask, request, redirect, session, render_template_string
 from datetime import datetime
 import sqlite3
 
@@ -6,39 +6,10 @@ app = Flask(__name__)
 app.secret_key = "atslega" 
 
 DB_NAME = "colorgenlogin.db"
-
-html_template = '''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<h1 class="text-center">Login Page</h1>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-</head>
-<body>
-    
-  <div class="container">
-  <h2>Vertical (basic) form</h2>
-  <form action="/action_page.php">
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" >
-    </div>
-    <div class="form-group">
-      <label for="pwd">Password:</label>
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
-    </div>
-    <div class="checkbox">
-      <label><input type="checkbox" name="remember"> Remember me</label>
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form>
-</div>
+render_template = 'login.html'
 
 
-</body>
-</html>
-'''
+
 
 
 def get_db():
@@ -67,10 +38,10 @@ init_db()
 def home():
     if "user" in session:
         return f"Welcome {session['user']}! <br><a href='/logout'>Logout</a>"
-    return redirect("login.html")
+    return redirect("/login")
 
 
-@app.route("register.html", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         email = request.form["email"]
