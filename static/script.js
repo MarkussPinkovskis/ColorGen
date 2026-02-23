@@ -156,9 +156,8 @@ async function uploadAvatar(event) {
         if (data.error) {
             alert(data.error);
         } else {
-            const url = `/static/avatars/${data.avatar}`;
-            avatar.innerHTML = `<img src="${url}" alt="avatar">`;
-            document.querySelector('.nav-avatar').innerHTML = `<img src="${url}" alt="avatar">`;
+            avatar.innerHTML = `<img src="${data.avatar}" alt="avatar">`;
+            document.getElementById('navAvatar').innerHTML = `<img src="${data.avatar}" alt="avatar">`;
         }
     } catch {
         alert('Upload failed. Please try again.');
