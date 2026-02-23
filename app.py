@@ -5,11 +5,14 @@ import sqlite3
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+
+load_dotenv()
+
 import psycopg2
+import psycopg2.extras
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
@@ -17,9 +20,11 @@ app.secret_key = "atslega"
 
 DB_NAME = "colorgenlogin.db"
 
+IS_POSTGRES = bool(DATABASE_URL)
+
 
 def get_db():
-    if DATABASE_URL:
+    if IS_POSTGRES:
         conn = psycopg2.connect(DATABASE_URL)
         return conn
     else:
@@ -28,17 +33,40 @@ def get_db():
         return conn
 
 
+def db_execute(conn, sql, params=()):
+    """Unified execute that handles both sqlite3 and psycopg2."""
+    if IS_POSTGRES:
+        sql = sql.replace("?", "%s")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(sql, params)
+        return cur
+    else:
+        return conn.execute(sql, params)
+
+
 def init_db():
-    with get_db() as conn:
-        conn.execute("""
+    if IS_POSTGRES:
+        create_sql = """
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """
+    else:
+        create_sql = """
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )
-        """)
-        conn.commit()
+        """
+    conn = get_db()
+    cur = db_execute(conn, create_sql)
+    conn.commit()
+    conn.close()
 
 
 init_db()
@@ -57,10 +85,10 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        with get_db() as conn:
-            user = conn.execute(
-                "SELECT * FROM users WHERE email = ?", (email,)
-            ).fetchone()
+        conn = get_db()
+        cur = db_execute(conn, "SELECT * FROM users WHERE email = ?", (email,))
+        user = cur.fetchone()
+        conn.close()
 
         if user and check_password_hash(user["password"], password):
             session["user"] = email
@@ -75,18 +103,19 @@ def login():
 def register():
     email = request.form["email"]
     password = request.form["password"]
-
     hashed_password = generate_password_hash(password)
 
     try:
-        with get_db() as conn:
-            conn.execute(
-                "INSERT INTO users (email, password, created_at) VALUES (?, ?, ?)",
-                (email, hashed_password, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            )
-            conn.commit()
+        conn = get_db()
+        db_execute(
+            conn,
+            "INSERT INTO users (email, password, created_at) VALUES (?, ?, ?)",
+            (email, hashed_password, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        )
+        conn.commit()
+        conn.close()
         return render_template("login.html", success="Registration successful! Please login.")
-    except sqlite3.IntegrityError:
+    except (sqlite3.IntegrityError, psycopg2.errors.UniqueViolation):
         return render_template("login.html", error="Email already exists!")
 
 
@@ -94,7 +123,6 @@ def register():
 def logout():
     session.pop("user", None)
     return redirect("/login")
-
 
 
 @app.route("/color-recomend", methods=["POST"])
