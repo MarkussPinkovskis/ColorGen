@@ -41,8 +41,8 @@
             </a>
             <div class="d-flex align-items-center gap-3">
             <a href="/profile" class="nav-avatar" title="Profile" id="navAvatar">
-                {% if avatar %}
-                    <img src="{{ avatar }}" alt="avatar">
+                {% if session_avatar %}
+                    <img src="{{ session_avatar }}" alt="avatar">
                 {% else %}
                      {{ user[0].upper() }}
                 {% endif %}
