@@ -6,271 +6,27 @@
     <title>ColorGen - Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .navbar {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
-            font-size: 22px;
-        }
-        .nav-user {
-            color: rgba(255,255,255,0.85);
-            font-size: 14px;
-        }
-        .btn-nav-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            padding: 6px 16px;
-            font-size: 14px;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .btn-nav-logout:hover {
-            background: rgba(255,255,255,0.35);
-            color: white;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 80px 20px 40px;
-            color: white;
-        }
-        .hero h1 {
-            font-size: 52px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .hero p {
-            font-size: 20px;
-            opacity: 0.85;
-            margin-bottom: 40px;
-        }
-        .btn-find {
-            background: white;
-            color: #667eea;
-            border: none;
-            border-radius: 50px;
-            padding: 16px 48px;
-            font-size: 18px;
-            font-weight: 700;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .btn-find:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            color: #764ba2;
-        }
-
-        .results-section {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px 80px;
-        }
-        .results-card {
-            background: white;
-            border-radius: 20px;
-            padding: 36px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: none;
-        }
-        .results-card h4 {
-            color: #333;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .results-card .subtitle {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 28px;
-        }
-        .primary-swatch {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 12px;
-        }
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 16px;
-            margin-top: 10px;
-        }
-        .color-chip {
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .color-chip:hover { transform: translateY(-4px); }
-        .color-chip .swatch { height: 90px; }
-        .color-chip .chip-label {
-            padding: 10px;
-            background: #f8f9fa;
-            text-align: center;
-        }
-        .color-chip .chip-label .chip-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: #333;
-            display: block;
-        }
-        .color-chip .chip-label .chip-hex {
-            font-size: 11px;
-            color: #888;
-            display: block;
-        }
-        .copied-badge {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 9999;
-            pointer-events: none;
-        }
-        .copied-badge.show { opacity: 1; }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-            overflow: hidden;
-        }
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 24px 28px;
-        }
-        .modal-header .btn-close { filter: invert(1); }
-        .modal-body { padding: 32px; }
-        .color-wheel-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        #colorPicker {
-            width: 200px;
-            height: 200px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 0;
-            background: none;
-            outline: none;
-        }
-        .preview-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 14px 20px;
-            width: 100%;
-        }
-        .preview-swatch {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            transition: background 0.2s;
-        }
-        .preview-hex {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
-            letter-spacing: 1px;
-        }
-        .preview-label { font-size: 13px; color: #888; }
-        .modal-footer { border: none; padding: 0 32px 28px; }
-        .btn-search {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 32px;
-            font-weight: 600;
-            font-size: 16px;
-            width: 100%;
-            transition: all 0.2s;
-        }
-        .btn-search:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-            color: white;
-        }
-        .btn-search:disabled { opacity: 0.7; transform: none; }
-
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        .toast {
-            min-width: 300px;
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .toast-header {
-            border-radius: 12px 12px 0 0;
-            border: none;
-            font-weight: 600;
-            color: white;
-        }
-        .toast-header.green { background: #198754; }
-        .toast-header.red   { background: #dc3545; }
-        .toast-header .btn-close { filter: invert(1); }
-        .toast-body {
-            background: white;
-            border-radius: 0 0 12px 12px;
-            color: #333;
-            font-size: 14px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
-    
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
     <div class="toast-container">
         <div id="welcomeToast" class="toast" role="alert" aria-atomic="true">
             <div class="toast-header green">
-                <i class="fas fa-check-circle me-2"></i>
-                <strong class="me-auto">Logged In</strong>
+                <i class="fas fa-circle-check me-2" style="color:#34d399"></i>
+                <strong class="me-auto">Welcome back</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-body">👋 Welcome back, <strong>{{ user }}</strong>!</div>
+            <div class="toast-body">👋 Good to see you, <strong>{{ user }}</strong>!</div>
         </div>
         <div id="errorToast" class="toast" role="alert" aria-atomic="true">
             <div class="toast-header red">
-                <i class="fas fa-exclamation-circle me-2"></i>
+                <i class="fas fa-circle-exclamation me-2" style="color:#f87171"></i>
                 <strong class="me-auto">Error</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
@@ -278,178 +34,119 @@
         </div>
     </div>
 
-    
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="/"><i class="fas fa-palette me-2"></i>ColorGen</a>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-palette me-2" style="background: linear-gradient(135deg,#c8b5ff,#ff9de2); -webkit-background-clip:text; -webkit-text-fill-color:transparent;"></i>ColorGen
+            </a>
             <div class="d-flex align-items-center gap-3">
-                <span class="nav-user"><i class="fas fa-user me-1"></i>{{ user }}</span>
-                <a href="/logout" class="btn-nav-logout">
-                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                </a>
+            <a href="/profile" class="nav-avatar" title="Profile" id="navAvatar">
+                {% if session_avatar %}
+                <img src="{{ url_for('static', filename='avatars/' + session_avatar) }}" alt="avatar">
+                {% else %}
+                {{ user[0].upper() }}
+                {% endif %}
+            </a>
             </div>
         </div>
     </nav>
 
-    
     <div class="hero">
-        <h1>🎨 ColorGen</h1>
-        <p>Pick any color and discover the perfect palette to go with it</p>
+        <div class="hero-eyebrow">✦ AI-Powered Color Palettes</div>
+        <h1>Discover Your<br>Perfect Palette</h1>
+        <p>Choose any color and let AI craft a beautiful,<br>harmonious palette just for you.</p>
         <button class="btn-find" data-bs-toggle="modal" data-bs-target="#colorModal">
-            <i class="fas fa-search me-2"></i>Find Colors
+            <i class="fas fa-wand-magic-sparkles me-2"></i>Generate Palette
         </button>
     </div>
 
-    
     <div class="results-section">
         <div class="results-card" id="resultsCard">
-            <div class="d-flex align-items-center mb-1">
+
+            <div class="results-header">
                 <div class="primary-swatch" id="primarySwatch"></div>
                 <div>
-                    <h4 class="mb-0">Recommended Palette</h4>
-                    <div class="subtitle">Click any color to copy its hex code</div>
+                    <h4>Your Palette</h4>
+                    <div class="subtitle">Click a color to preview it alongside your primary</div>
                 </div>
             </div>
+
             <div class="color-grid" id="colorGrid"></div>
+
+            <div class="preview-panel" id="previewPanel">
+                <div class="section-divider"></div>
+                <div class="preview-inner">
+
+                    <div class="preview-showcase">
+                        <div class="showcase-half" id="showcasePrimary">
+                            <span class="showcase-label">Primary</span>
+                        </div>
+                        <div class="showcase-divider"></div>
+                        <div class="showcase-half" id="showcaseSelected">
+                            <span class="showcase-label">Selected</span>
+                        </div>
+                    </div>
+
+                    <div class="preview-info-row">
+                        <div class="preview-color-info">
+                            <div class="preview-dot" id="panelDot"></div>
+                            <div>
+                                <span class="preview-color-name" id="panelName">—</span>
+                                <span class="preview-color-hex" id="panelHex">—</span>
+                            </div>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn-copy" id="copyBtn" onclick="doCopy()">
+                                <i class="fas fa-copy"></i> Copy Hex
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="preview-harmony" id="harmonyStrip"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="modal fade" id="colorModal" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
+    <div class="modal fade" id="colorModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-palette me-2"></i>Pick a Color</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-palette me-2" style="color:var(--accent)"></i>Pick a Color
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="color-wheel-wrapper">
-                        <input type="color" id="colorPicker" value="#667eea">
+                        <div class="picker-ring">
+                            <input type="color" id="colorPicker" value="#c8b5ff">
+                        </div>
                         <div class="preview-row">
-                            <div class="preview-swatch" id="previewSwatch" style="background:#667eea;"></div>
+                            <div class="preview-swatch" id="previewSwatch" style="background:#c8b5ff;"></div>
                             <div>
-                                <div class="preview-hex" id="previewHex">#667EEA</div>
+                                <div class="preview-hex" id="previewHex">#C8B5FF</div>
                                 <div class="preview-label">Selected Color</div>
                             </div>
                         </div>
                     </div>
                 </div>
-               <div class="modal-footer d-flex flex-column gap-2">
-                <button class="btn-search" id="searchBtn" onclick="findColors()">
-                <i class="fas fa-magic me-2"></i>Find Recommended Colors
-                </button>
-                <button class="btn-search" id="randomBtn" onclick="randomColors()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <i class="fas fa-random me-2"></i>Random
-                </button>
-            </div>
+                <div class="modal-footer d-flex flex-column gap-2">
+                    <button class="btn-search" id="searchBtn" onclick="findColors()">
+                        <i class="fas fa-wand-magic-sparkles me-2"></i>Find Recommended Colors
+                    </button>
+                    <button class="btn-search-random" id="randomBtn" onclick="randomColors()">
+                        <i class="fas fa-shuffle me-2"></i>Surprise Me
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-   
-    <div class="copied-badge" id="copiedBadge">✅ Hex copied!</div>
+
+    <div class="copied-badge" id="copiedBadge">✓ Hex copied to clipboard</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-       
-        new bootstrap.Toast(document.getElementById('welcomeToast'), { delay: 4000 }).show();
-
-
-        const picker = document.getElementById('colorPicker');
-        picker.addEventListener('input', () => {
-            document.getElementById('previewSwatch').style.background = picker.value;
-            document.getElementById('previewHex').textContent = picker.value.toUpperCase();
-        });
-
-        
-        async function findColors() {
-            const color = picker.value;
-            const btn = document.getElementById('searchBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Finding colors...';
-
-            try {
-                const res = await fetch('/color-recomend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ color: color })
-                });
-                const data = await res.json();
-
-                if (data.error) {
-                    showErrorToast(data.error);
-                } else {
-                    bootstrap.Modal.getInstance(document.getElementById('colorModal')).hide();
-                    renderResults(color, data.colors);
-                }
-            } catch (err) {
-                showErrorToast('Network error. Please try again.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-magic me-2"></i>Find Recommended Colors';
-            }
-        }
-
-        
-        function renderResults(primaryHex, colors) {
-            document.getElementById('primarySwatch').style.background = primaryHex;
-            const grid = document.getElementById('colorGrid');
-            grid.innerHTML = '';
-            colors.forEach(c => {
-                const chip = document.createElement('div');
-                chip.className = 'color-chip';
-                chip.innerHTML = `
-                    <div class="swatch" style="background:${c.hex};"></div>
-                    <div class="chip-label">
-                        <span class="chip-name">${c.name}</span>
-                        <span class="chip-hex">${c.hex.toUpperCase()}</span>
-                    </div>`;
-                chip.onclick = () => copyHex(c.hex);
-                grid.appendChild(chip);
-            });
-            const card = document.getElementById('resultsCard');
-            card.style.display = 'block';
-            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        
-        function copyHex(hex) {
-            navigator.clipboard.writeText(hex.toUpperCase());
-            const badge = document.getElementById('copiedBadge');
-            badge.classList.add('show');
-            setTimeout(() => badge.classList.remove('show'), 2000);
-        }
-
-        
-        function showErrorToast(msg) {
-            document.getElementById('errorToastMsg').textContent = msg;
-            new bootstrap.Toast(document.getElementById('errorToast'), { delay: 4000 }).show();
-        }
-
-        async function randomColors() {
-    const btn = document.getElementById('randomBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
-
-    try {
-        const res = await fetch('/color-random', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await res.json();
-
-        if (data.error) {
-            showErrorToast(data.error);
-        } else {
-            bootstrap.Modal.getInstance(document.getElementById('colorModal')).hide();
-            renderResults(data.primary.hex, data.colors);
-        }
-    } catch (err) {
-        showErrorToast('Network error. Please try again.');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-random me-2"></i>Random';
-    }
-}
-    </script>
-
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

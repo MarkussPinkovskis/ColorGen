@@ -5,6 +5,13 @@ import sqlite3
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import uuid
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 load_dotenv()
 
@@ -74,9 +81,18 @@ init_db()
 
 @app.route("/")
 def home():
-    if "user" in session:
-        return render_template("home.html", user=session['user'])
-    return redirect("/login")
+    if "user" not in session:
+        return redirect("/login")
+
+    conn = get_db()
+    cur = db_execute(conn, "SELECT avatar FROM users WHERE email = ?", (session["user"],))
+    row = cur.fetchone()
+    conn.close()
+
+    return render_template("home.html",
+        user=session["user"],
+        session_avatar=row["avatar"] if row else None
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -202,7 +218,55 @@ def getColorrandom():
     except Exception as e:
         print(f"OpenAI error: {e}")
         return jsonify({"error": str(e)}), 500
-    
+
+
+@app.route("/profile")
+def profile():
+    if "user" not in session:
+        return redirect("/login")
+
+    conn = get_db()
+    cur = db_execute(conn, "SELECT created_at, avatar FROM users WHERE email = ?", (session["user"],))
+    row = cur.fetchone()
+    conn.close()
+
+    return render_template("profile.html",
+        user=session["user"],
+        created_at=row["created_at"] if row else "Unknown",
+        avatar=row["avatar"] if row else None
+    )
+
+
+@app.route("/upload-avatar", methods=["POST"])
+def upload_avatar():
+    if "user" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+
+    file = request.files.get("avatar")
+    if not file or file.filename == "":
+        return jsonify({"error": "No file provided"}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({"error": "Invalid file type"}), 400
+
+    ext = file.filename.rsplit('.', 1)[1].lower()
+    filename = f"{uuid.uuid4().hex}.{ext}"
+    save_path = os.path.join("static", "avatars", filename)
+    file.save(save_path)
+
+    conn = get_db()
+    cur = db_execute(conn, "SELECT avatar FROM users WHERE email = ?", (session["user"],))
+    row = cur.fetchone()
+    if row and row["avatar"]:
+        old_path = os.path.join("static", "avatars", row["avatar"])
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    db_execute(conn, "UPDATE users SET avatar = ? WHERE email = ?", (filename, session["user"]))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"avatar": filename})
 
 if __name__ == "__main__":
     app.run(debug=True)

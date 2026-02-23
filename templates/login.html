@@ -3,261 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Register</title>
+    <title>ColorGen - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .auth-container {
-            max-width: 450px;
-            margin: 50px auto;
-        }
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 30px;
-            border: none;
-        }
-        .card-header h3 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 28px;
-        }
-        .card-body {
-            padding: 40px;
-        }
-        .form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-weight: 600;
-            transition: transform 0.2s;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .input-group-text {
-            background: transparent;
-            border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 10px 0 0 10px;
-        }
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-        .nav-tabs {
-            border: none;
-            margin-bottom: 30px;
-        }
-        .nav-tabs .nav-link {
-            border: none;
-            color: #666;
-            font-weight: 600;
-            padding: 10px 30px;
-            background: transparent;
-        }
-        .nav-tabs .nav-link.active {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            background: transparent;
-        }
-        .nav-tabs .nav-link:hover {
-            border-color: transparent;
-            color: #764ba2;
-        }
-
-        /* Toast styles */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        .toast {
-            min-width: 300px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border: none;
-        }
-        .toast-header {
-            border-radius: 12px 12px 0 0;
-            border: none;
-            font-weight: 600;
-        }
-        .toast.toast-success .toast-header {
-            background: #198754;
-            color: white;
-        }
-        .toast.toast-error .toast-header {
-            background: #dc3545;
-            color: white;
-        }
-        .toast.toast-success .toast-header .btn-close,
-        .toast.toast-error .toast-header .btn-close {
-            filter: invert(1);
-        }
-        .toast-body {
-            background: white;
-            border-radius: 0 0 12px 12px;
-            color: #333;
-            font-size: 14px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
-    
-    <div class="toast-container">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
 
+    <div class="toast-container">
         {% if error %}
-        <div id="errorToast" class="toast toast-error" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="fas fa-exclamation-circle me-2"></i>
+        <div id="errorToast" class="toast" role="alert" aria-atomic="true">
+            <div class="toast-header red">
+                <i class="fas fa-circle-exclamation me-2" style="color:#f87171"></i>
                 <strong class="me-auto">Error</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-body">
-                {{ error }}
-            </div>
+            <div class="toast-body">{{ error }}</div>
         </div>
         {% endif %}
 
         {% if success %}
-        <div id="successToast" class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="fas fa-check-circle me-2"></i>
+        <div id="successToast" class="toast" role="alert" aria-atomic="true">
+            <div class="toast-header green">
+                <i class="fas fa-circle-check me-2" style="color:#34d399"></i>
                 <strong class="me-auto">Success</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-body">
-                {{ success }}
-            </div>
+            <div class="toast-body">{{ success }}</div>
         </div>
         {% endif %}
-
     </div>
 
-    <div class="container">
-        <div class="auth-container">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-user-circle fa-3x mb-3"></i>
-                    <h3>Welcome</h3>
-                    <p class="mb-0">Login or create an account</p>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            <div class="auth-card-header">
+                <div class="auth-logo">
+                    <i class="fas fa-palette"></i>
                 </div>
-                <div class="card-body">
+                <h2>ColorGen</h2>
+                <p>Sign in or create your account</p>
+            </div>
 
-                    <ul class="nav nav-tabs justify-content-center" id="authTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link {% if not success %}active{% endif %}" id="login-tab" data-bs-toggle="tab"
-                                    data-bs-target="#login" type="button" role="tab">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link {% if success %}active{% endif %}" id="register-tab" data-bs-toggle="tab"
-                                    data-bs-target="#register" type="button" role="tab">
-                                <i class="fas fa-user-plus"></i> Register
-                            </button>
-                        </li>
-                    </ul>
+            <div class="auth-card-body">
 
-                    <div class="tab-content" id="authTabContent">
-
-                      
-                        <div class="tab-pane fade {% if not success %}show active{% endif %}" id="login" role="tabpanel">
-                            <form action="/login" method="POST">
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-envelope"></i>
-                                        </span>
-                                        <input type="email" class="form-control" name="email"
-                                               placeholder="Enter your email" required>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
-                                        <input type="password" class="form-control" name="password"
-                                               placeholder="Enter your password" required>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-sign-in-alt"></i> Login
-                                </button>
-                            </form>
-                        </div>
-
-                      
-                        <div class="tab-pane fade {% if success %}show active{% endif %}" id="register" role="tabpanel">
-                            <form action="/register" method="POST">
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-envelope"></i>
-                                        </span>
-                                        <input type="email" class="form-control" name="email"
-                                               placeholder="Enter your email" required>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
-                                        <input type="password" class="form-control" name="password"
-                                               placeholder="Create a password" required minlength="6">
-                                    </div>
-                                    <small class="text-muted">Password must be at least 6 characters</small>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-user-plus"></i> Register
-                                </button>
-                            </form>
-                        </div>
-
-                    </div>
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn {% if not success %}active{% endif %}" onclick="switchTab('login', this)">
+                        <i class="fas fa-arrow-right-to-bracket"></i> Login
+                    </button>
+                    <button class="auth-tab-btn {% if success %}active{% endif %}" onclick="switchTab('register', this)">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
                 </div>
+
+                <div class="auth-tab-pane {% if not success %}active{% endif %}" id="tab-login">
+                    <form action="/login" method="POST">
+                        <div class="auth-field">
+                            <label>Email</label>
+                            <div class="auth-input-wrap">
+                                <span class="auth-input-icon"><i class="fas fa-envelope"></i></span>
+                                <input type="email" name="email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="auth-field">
+                            <label>Password</label>
+                            <div class="auth-input-wrap">
+                                <span class="auth-input-icon"><i class="fas fa-lock"></i></span>
+                                <input type="password" name="password" placeholder="Enter your password" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-auth">
+                            <i class="fas fa-arrow-right-to-bracket"></i> Login
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-tab-pane {% if success %}active{% endif %}" id="tab-register">
+                    <form action="/register" method="POST">
+                        <div class="auth-field">
+                            <label>Email</label>
+                            <div class="auth-input-wrap">
+                                <span class="auth-input-icon"><i class="fas fa-envelope"></i></span>
+                                <input type="email" name="email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="auth-field">
+                            <label>Password</label>
+                            <div class="auth-input-wrap">
+                                <span class="auth-input-icon"><i class="fas fa-lock"></i></span>
+                                <input type="password" name="password" placeholder="Create a password" required minlength="6">
+                            </div>
+                            <div class="auth-hint"><i class="fas fa-circle-info me-1"></i>At least 6 characters</div>
+                        </div>
+                        <button type="submit" class="btn-auth">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      
         document.querySelectorAll('.toast').forEach(el => {
             new bootstrap.Toast(el, { delay: 4000 }).show();
         });
+
+        function switchTab(tab, btnEl) {
+            document.querySelectorAll('.auth-tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            btnEl.classList.add('active');
+        }
     </script>
 </body>
 </html>
