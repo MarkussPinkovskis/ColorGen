@@ -3,3 +3,4 @@ werkzeug
 openai
 python-dotenv
 gunicorn
+psycopg2

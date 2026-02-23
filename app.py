@@ -5,6 +5,9 @@ import sqlite3
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import psycopg2
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -16,9 +19,13 @@ DB_NAME = "colorgenlogin.db"
 
 
 def get_db():
-    conn = sqlite3.connect(DB_NAME, timeout=10)
-    conn.row_factory = sqlite3.Row
-    return conn
+    if DATABASE_URL:
+        conn = psycopg2.connect(DATABASE_URL)
+        return conn
+    else:
+        conn = sqlite3.connect(DB_NAME, timeout=10)
+        conn.row_factory = sqlite3.Row
+        return conn
 
 
 def init_db():
