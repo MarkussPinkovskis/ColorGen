@@ -147,7 +147,7 @@ def getColorRecomend():
                 {
                     "role": "system",
                     "content": (
-                        "You are a color expert. When given a hex color, return exactly 5 colors that pair well with it. "
+                        "You are a color expert. When given a hex color, return exactly 4 colors that pair well with it. "
                         "Respond ONLY with a raw JSON array — no markdown, no explanation. "
                         "Each object must have 'hex' (e.g. '#FF5733') and 'name' (e.g. 'Sunset Orange') fields."
                     )
@@ -167,7 +167,42 @@ def getColorRecomend():
     except Exception as e:
         print(f"OpenAI error: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/color-random", methods=["POST"])
+def getColorrandom():
+    import json
 
+    if "user" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a color expert. Return a random color and 4 colors that pair well with it. "
+                        "Respond ONLY with a raw JSON object — no markdown, no explanation. "
+                        "The object must have 'primary' (with 'hex' and 'name') and 'colors' (array of 4 objects each with 'hex' and 'name')."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": "Give me a random color (it can be any unique color also) with 4 colors that pair well with it"
+                }
+            ]
+        )
+
+        raw = response.choices[0].message.content.strip()
+        raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+        result = json.loads(raw)
+        return jsonify({"primary": result["primary"], "colors": result["colors"]})
+
+    except Exception as e:
+        print(f"OpenAI error: {e}")
+        return jsonify({"error": str(e)}), 500
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -314,7 +314,6 @@
         </div>
     </div>
 
-    
     <div class="modal fade" id="colorModal" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -334,15 +333,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-search" id="searchBtn" onclick="findColors()">
-                        <i class="fas fa-magic me-2"></i>Find Recommended Colors
-                    </button>
-                </div>
+               <div class="modal-footer d-flex flex-column gap-2">
+                <button class="btn-search" id="searchBtn" onclick="findColors()">
+                <i class="fas fa-magic me-2"></i>Find Recommended Colors
+                </button>
+                <button class="btn-search" id="randomBtn" onclick="randomColors()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="fas fa-random me-2"></i>Random
+                </button>
+            </div>
             </div>
         </div>
     </div>
-
    
     <div class="copied-badge" id="copiedBadge">✅ Hex copied!</div>
 
@@ -422,6 +423,33 @@
             document.getElementById('errorToastMsg').textContent = msg;
             new bootstrap.Toast(document.getElementById('errorToast'), { delay: 4000 }).show();
         }
+
+        async function randomColors() {
+    const btn = document.getElementById('randomBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+
+    try {
+        const res = await fetch('/color-random', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+
+        if (data.error) {
+            showErrorToast(data.error);
+        } else {
+            bootstrap.Modal.getInstance(document.getElementById('colorModal')).hide();
+            renderResults(data.primary.hex, data.colors);
+        }
+    } catch (err) {
+        showErrorToast('Network error. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-random me-2"></i>Random';
+    }
+}
     </script>
+
 </body>
 </html>
