@@ -249,24 +249,24 @@ def upload_avatar():
     if not allowed_file(file.filename):
         return jsonify({"error": "Invalid file type"}), 400
 
-    ext = file.filename.rsplit('.', 1)[1].lower()
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    save_path = os.path.join("static", "avatars", filename)
-    file.save(save_path)
+    try:
+        import base64
+        file_data = file.read()
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        mime = f"image/{ext}"
+        b64 = base64.b64encode(file_data).decode('utf-8')
+        data_url = f"data:{mime};base64,{b64}"
 
-    conn = get_db()
-    cur = db_execute(conn, "SELECT avatar FROM users WHERE email = ?", (session["user"],))
-    row = cur.fetchone()
-    if row and row["avatar"]:
-        old_path = os.path.join("static", "avatars", row["avatar"])
-        if os.path.exists(old_path):
-            os.remove(old_path)
+        conn = get_db()
+        db_execute(conn, "UPDATE users SET avatar = ? WHERE email = ?", (data_url, session["user"]))
+        conn.commit()
+        conn.close()
 
-    db_execute(conn, "UPDATE users SET avatar = ? WHERE email = ?", (filename, session["user"]))
-    conn.commit()
-    conn.close()
+        return jsonify({"avatar": data_url})
 
-    return jsonify({"avatar": filename})
+    except Exception as e:
+        print(f"Avatar upload error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

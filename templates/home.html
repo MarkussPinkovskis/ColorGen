@@ -42,7 +42,7 @@
             <div class="d-flex align-items-center gap-3">
             <a href="/profile" class="nav-avatar" title="Profile" id="navAvatar">
                 {% if session_avatar %}
-                <img src="{{ url_for('static', filename='avatars/' + session_avatar) }}" alt="avatar">
+                <img src="{{ session_avatar }}" alt="avatar">
                 {% else %}
                 {{ user[0].upper() }}
                 {% endif %}
