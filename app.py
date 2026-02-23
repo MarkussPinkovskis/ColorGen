@@ -126,7 +126,7 @@ def register():
         db_execute(
             conn,
             "INSERT INTO users (email, password, created_at) VALUES (?, ?, ?)",
-            (email, hashed_password, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            (email, hashed_password, datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
         )
         conn.commit()
         conn.close()
